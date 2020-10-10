@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubpaging.R
 import com.example.githubpaging.model.Repo
@@ -25,7 +24,7 @@ class ReposAdapter : PagingDataAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_C
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoViewHolder {
-        return RepoViewHolder.from(parent)
+        return RepoViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
@@ -92,7 +91,7 @@ class ReposAdapter : PagingDataAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_C
 
 
         companion object {
-            fun from(parent: ViewGroup): RepoViewHolder {
+            fun create(parent: ViewGroup): RepoViewHolder {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.repo_view_item, parent, false)
                 return RepoViewHolder(view)
