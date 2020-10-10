@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.githubpaging.R
 import com.example.githubpaging.model.Repo
 
-class ReposAdapter : ListAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_COMPARATOR) {
+class ReposAdapter : PagingDataAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_COMPARATOR) {
     companion object {
         private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Repo>() {
             override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean =
