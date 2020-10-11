@@ -12,27 +12,50 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.githubpaging.R
 import com.example.githubpaging.model.Repo
 
-class ReposAdapter : PagingDataAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_COMPARATOR) {
+class ReposAdapter : PagingDataAdapter<UiModel, RecyclerView.ViewHolder>(REPO_COMPARATOR) {
+
     companion object {
-        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Repo>() {
-            override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean =
-                oldItem.fullName == newItem.fullName
+        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<UiModel>() {
+            override fun areItemsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+                return (oldItem is UiModel.RepoItem && newItem is UiModel.RepoItem &&
+                        oldItem.repo.fullName == newItem.repo.fullName) ||
+                        (oldItem is UiModel.SeparatorItem && newItem is UiModel.SeparatorItem &&
+                                oldItem.description == newItem.description)
+            }
 
-            override fun areContentsTheSame(oldItem: Repo, newItem: Repo): Boolean =
-                oldItem == newItem
+            override fun areContentsTheSame(oldItem: UiModel, newItem: UiModel): Boolean {
+                return oldItem == newItem
+            }
+
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoViewHolder {
-        return RepoViewHolder.create(parent)
-    }
-
-    override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
-        val repoItem = getItem(position)
-        if (repoItem != null) {
-            holder.bind(repoItem)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == R.layout.repo_view_item) {
+            RepoViewHolder.create(parent)
+        } else {
+            SeparatorViewHolder.create(parent)
         }
     }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val uiModel = getItem(position)
+        uiModel.let {
+            when (uiModel) {
+                is UiModel.RepoItem -> (holder as RepoViewHolder).bind(uiModel.repo)
+                is UiModel.SeparatorItem -> (holder as SeparatorViewHolder).bind(uiModel.description)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is UiModel.RepoItem -> R.layout.repo_view_item
+            is UiModel.SeparatorItem -> R.layout.separator_view_item
+            null -> throw UnsupportedOperationException("Unknown view")
+        }
+    }
+
 
     class RepoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val name: TextView = view.findViewById(R.id.repo_name)
@@ -95,6 +118,22 @@ class ReposAdapter : PagingDataAdapter<Repo, ReposAdapter.RepoViewHolder>(REPO_C
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.repo_view_item, parent, false)
                 return RepoViewHolder(view)
+            }
+        }
+    }
+
+    class SeparatorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val description: TextView = view.findViewById(R.id.separator_description)
+
+        fun bind(separatorText: String) {
+            description.text = separatorText
+        }
+
+        companion object {
+            fun create(parent: ViewGroup): SeparatorViewHolder {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.separator_view_item, parent, false)
+                return SeparatorViewHolder(view)
             }
         }
     }
