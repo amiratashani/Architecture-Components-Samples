@@ -11,7 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
+
 class SearchRepositoriesViewModel(private val repository:GithubRepository):ViewModel() {
     private var currentQueryValue: String? = null
 
