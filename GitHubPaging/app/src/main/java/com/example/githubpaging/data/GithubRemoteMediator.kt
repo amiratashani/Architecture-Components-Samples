@@ -13,16 +13,20 @@ import com.example.githubpaging.model.Repo
 import retrofit2.HttpException
 import java.io.IOException
 import java.io.InvalidObjectException
+import javax.inject.Inject
+import javax.inject.Qualifier
 
 // GitHub page API is 1 based: https://developer.github.com/v3/#pagination
 private const val GITHUB_STARTING_PAGE_INDEX = 1
 
 @OptIn(ExperimentalPagingApi::class)
-class GithubRemoteMediator(
+
+class  GithubRemoteMediator (
     private val query: String,
     private val service: GithubService,
     private val repoDatabase: RepoDatabase
 ) : RemoteMediator<Int, Repo>() {
+
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Repo>): MediatorResult {
         val page: Int = when (loadType) {
             LoadType.REFRESH -> {

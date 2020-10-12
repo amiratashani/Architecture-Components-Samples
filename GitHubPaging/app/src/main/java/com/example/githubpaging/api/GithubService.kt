@@ -24,7 +24,7 @@ interface GithubService {
     ): RepoSearchResponse
 
     companion object {
-        private const val BASE_URL = "https://api.github.com/"
+        const val BASE_URL = "https://api.github.com/"
 
         fun create(): GithubService {
             val logger = HttpLoggingInterceptor()

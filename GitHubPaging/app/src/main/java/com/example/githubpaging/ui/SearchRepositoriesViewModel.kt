@@ -1,5 +1,6 @@
 package com.example.githubpaging.ui
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -13,9 +14,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class SearchRepositoriesViewModel(private val repository: GithubRepository) : ViewModel() {
+class SearchRepositoriesViewModel @ViewModelInject constructor(
+    private val repository: GithubRepository
+) : ViewModel() {
     private var currentQueryValue: String? = null
 
     private var currentSearchResult: Flow<PagingData<UiModel>>? = null
@@ -25,6 +29,7 @@ class SearchRepositoriesViewModel(private val repository: GithubRepository) : Vi
         if (queryString == currentQueryValue && lastResult != null) {
             return lastResult
         }
+
         currentQueryValue = queryString
         val newResult: Flow<PagingData<UiModel>> = repository.getSearchResultStream(queryString)
             .map { pagingData -> pagingData.map { UiModel.RepoItem(it) } }

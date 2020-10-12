@@ -1,26 +1,17 @@
 package com.example.githubpaging.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.githubpaging.Injection
-import com.example.githubpaging.R
 import com.example.githubpaging.databinding.ActivitySearchRepositoriesBinding
-import com.example.githubpaging.model.RepoSearchResult
-import kotlinx.android.synthetic.main.activity_search_repositories.*
-import kotlinx.android.synthetic.main.repo_view_item.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -28,10 +19,12 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class SearchRepositoriesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchRepositoriesBinding
-    private lateinit var viewModel: SearchRepositoriesViewModel
+    private val viewModel: SearchRepositoriesViewModel by viewModels()
     private val adapter = ReposAdapter()
 
     private var searchJob: Job? = null
@@ -51,10 +44,6 @@ class SearchRepositoriesActivity : AppCompatActivity() {
         binding = ActivitySearchRepositoriesBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        // get the view model
-        viewModel = ViewModelProvider(this, Injection.provideViewModelFactory(this))
-            .get(SearchRepositoriesViewModel::class.java)
 
         // add dividers between RecyclerView's row items
         val decoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
